@@ -289,7 +289,8 @@ public class ReplayDataTTRM : IReplayData
 	{
 		foreach (var rawEventbyPlayer in data?[replayIndex].replays)
 		{
-			var eventFull = rawEventbyPlayer.events?.First(ev => ev.type == EventType.Full);
+			var eventFull = rawEventbyPlayer.events?.FirstOrDefault(ev => ev.type == EventType.Full);
+			if(eventFull==null)continue;
 			string eventFullStr = eventFull.data.ToString();
 			var eventUserName = Util.GetUsername(ref eventFullStr);
 			if (eventUserName == username)
