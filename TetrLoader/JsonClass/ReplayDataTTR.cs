@@ -63,7 +63,7 @@ public class ReplayDataTTR : IReplayData
 		return gametype;
 	}
 
-	public List<Event.Event>? GetReplayEvents(string username, int replayIndex)
+	public List<Event.Event> GetReplayEvents(string username, int replayIndex)
 	{
 		var rawEvent = data.events;
 		List<Event.Event> events = new List<Event.Event>();

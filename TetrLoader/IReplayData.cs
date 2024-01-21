@@ -7,7 +7,7 @@ namespace TetrLoader
 {
 	public interface IReplayData
 	{
-		 List<Event>? GetReplayEvents(string username, int gameIndex);
+		 List<Event> GetReplayEvents(string username, int gameIndex);
 		 int GetPlayerCount();
 		 Stats GetReplayStats(string username, int replayIndex);
 		  int GetGameTotalFrames(int replayIndex);
