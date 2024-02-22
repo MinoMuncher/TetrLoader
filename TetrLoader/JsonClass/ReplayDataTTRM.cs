@@ -53,10 +53,10 @@ public class ReplayDataTTRM : IReplayData
 	public int GetGamesCount()
 		=> data.Count;
 
-	public int GetEndEventFrame(string username, int replayIndex)
+	public int? GetEndEventFrame(string username, int replayIndex)
 	{
 		var last = GetRawEventByUsername(replayIndex, username).Last(x => x.type == EventType.End);
-		return (int)last.frame;
+		return last.frame;
 	}
 
 	public EndContext GetEndContext(int playerIndex)
