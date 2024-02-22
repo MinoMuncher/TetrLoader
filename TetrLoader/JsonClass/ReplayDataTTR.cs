@@ -29,7 +29,7 @@ public class ReplayDataTTR : IReplayData
 
 	public string? back { get; set; } = null;
 
-	//TODO: fix this
+	//TODO: implement this
 	public int GetGameTotalFrames(int replayIndex)
 	{
 		return data.frames ?? -1;
@@ -42,9 +42,9 @@ public class ReplayDataTTR : IReplayData
 		=> 1;
 
 //TODO: argumants will be ignored. fix this
-	public int GetEndEventFrame(string username, int replayIndex)
+	public int? GetEndEventFrame(string username, int replayIndex)
 	{
-		return data.events.Last(x => x.type == EventType.End).frame ?? -1;
+		return data?.events?.Last(x => x.type == EventType.End).frame ?? null;
 	}
 
 	public EndContext GetEndContext(int playerIndex)
@@ -54,8 +54,7 @@ public class ReplayDataTTR : IReplayData
 
 	public string[] GetUsernames()
 	{
-			return new[] { user.username };
-	 
+		return new[] { user.username };
 	}
 
 	public GameType? GetGameType()
@@ -73,65 +72,7 @@ public class ReplayDataTTR : IReplayData
 			if (@event == null)
 				throw new Exception();
 
-			switch (@event.type)
-			{
-				case EventType.Start:
-					events.Add(@event);
-					break;
-
-				case EventType.End:
-					events.Add(new EventEnd
-					(
-						@event.id,
-						(int)@event.frame,
-						@event.type,
-						JsonSerializer.Deserialize<EventEndData>(@event.data.ToString())
-					));
-					break;
-
-				case EventType.Full:
-					events.Add(new EventFull
-					(
-						@event.id,
-						(int)@event.frame,
-						@event.type,
-						JsonSerializer.Deserialize<EventFullData>(@event.data.ToString())
-					));
-					break;
-
-				case EventType.Keyup:
-				case EventType.Keydown:
-					events.Add(new EventKeyInput
-					(
-						@event.id,
-						(int)@event.frame,
-						@event.type,
-						JsonSerializer.Deserialize<EventKeyInputData>(@event.data.ToString())
-					));
-					break;
-
-				case EventType.Targets:
-					events.Add(new EventTargets(
-						@event.id,
-						(int)@event.frame,
-						@event.type,
-						JsonSerializer.Deserialize<EventTargetsData>(@event.data.ToString())
-					));
-					break;
-
-				case EventType.Ige:
-					events.Add(new EventIge(
-						@event.id,
-						(int)@event.frame,
-						@event.type,
-						JsonSerializer.Deserialize<EventIgeData?>(@event.data.ToString())
-					));
-					break;
-
-				default:
-					events.Add(@event);
-					break;
-			}
+			events.Add(Util.ProcessEvent(@event));
 		}
 
 		return events;

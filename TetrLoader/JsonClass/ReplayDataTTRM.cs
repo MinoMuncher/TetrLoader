@@ -90,69 +90,7 @@ public class ReplayDataTTRM : IReplayData
 			throw new Exception();
 
 		foreach (var @event in rawEvent)
-		{
-			switch (@event.type)
-			{
-				case EventType.Start:
-					events.Add(@event);
-					break;
-
-				case EventType.End:
-					events.Add(new EventEnd
-					(
-						@event.id,
-						(int)@event.frame,
-						@event.type,
-						JsonSerializer.Deserialize<EventEndData>(@event.data.ToString())
-					));
-					break;
-
-				case EventType.Full:
-					events.Add(new EventFull
-					(
-						@event.id,
-						(int)@event.frame,
-						@event.type,
-						JsonSerializer.Deserialize<EventFullData>(@event.data.ToString())
-					));
-					break;
-
-				case EventType.Keydown:
-				case EventType.Keyup:
-					events.Add(new EventKeyInput
-					(
-						@event.id,
-						(int)@event.frame,
-						@event.type,
-						JsonSerializer.Deserialize<EventKeyInputData>(@event.data.ToString())
-					));
-					break;
-
-				case EventType.Targets:
-					events.Add(new EventTargets(
-						@event.id,
-						(int)@event.frame,
-						@event.type,
-						JsonSerializer.Deserialize<EventTargetsData>(@event.data.ToString())
-					));
-					break;
-
-				case EventType.Ige:
-					EventIge eventIge = new EventIge(@event.id,
-						(int)@event.frame,
-						@event.type,
-						@event.data.ToString()
-					);
-
-					events.Add(eventIge);
-					break;
-
-				default:
-					var igetype = @event.type;
-					events.Add(@event);
-					break;
-			}
-		}
+			events.Add(Util.ProcessEvent(@event));
 
 		return events;
 	}
@@ -228,10 +166,7 @@ public class ReplayDataTTRM : IReplayData
 					else if (@event.type == EventType.Full)
 					{
 						var eventFull = @event as EventFull;
-						if (eventFull.data.options.handling == null)
-						{
-							eventFull.data.options.handling = eventFull.data.game.handling;
-						}
+						eventFull.data.options.handling ??= eventFull.data.game.handling;
 					}
 				}
 			}
@@ -290,7 +225,8 @@ public class ReplayDataTTRM : IReplayData
 		foreach (var rawEventbyPlayer in data?[replayIndex].replays)
 		{
 			var eventFull = rawEventbyPlayer.events?.FirstOrDefault(ev => ev.type == EventType.Full);
-			if(eventFull==null)continue;
+			if (eventFull == null)
+				return null;
 			string eventFullStr = eventFull.data.ToString();
 			var eventUserName = Util.GetUsername(ref eventFullStr);
 			if (eventUserName == username)
