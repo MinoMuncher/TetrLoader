@@ -64,6 +64,13 @@ public class ReplayDataTTRM : IReplayData
 		return endcontext[playerIndex];
 	}
 
+	public int GetVersion(int replayIndex)
+	{
+		var full = Util.ProcessEvent(data[replayIndex].replays[0].events
+			.FirstOrDefault(x => x.type == EventType.Full)) as EventFull;
+		return (int)full.data.options.version;
+	}
+
 	public string[] GetUsernames()
 	{
 		string[] usernames;
@@ -134,7 +141,7 @@ public class ReplayDataTTRM : IReplayData
 						startFlag = true;
 					}
 
-					//TODO:fullを追加してfullとendの強制対応を消す	
+					//TODO:fullを追加してfullとendの強制対応を消す
 					if (ev.type == EventType.Full)
 					{
 						fullFlag = true;

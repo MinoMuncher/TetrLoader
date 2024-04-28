@@ -19,7 +19,7 @@ namespace TetrLoader
 		int? GetEndEventFrame(string username, int replayIndex);
 		EndContext GetEndContext(int playerIndex);
 		string[] GetUsernames();
-
+		int GetVersion(int playerIndex);	
 		GameType? GetGameType();
 	}
 }

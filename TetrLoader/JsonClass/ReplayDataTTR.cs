@@ -57,6 +57,13 @@ public class ReplayDataTTR : IReplayData
 		return new[] { user.username };
 	}
 
+
+	public int GetVersion(int replayIndex)
+	{
+		var full = data?.events?.FirstOrDefault(x => x.type == EventType.Full) as EventFull;
+		return (int)full.data.options.version;
+	}
+
 	public GameType? GetGameType()
 	{
 		return gametype;
