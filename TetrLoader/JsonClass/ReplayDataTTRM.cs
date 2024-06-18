@@ -178,7 +178,15 @@ public class ReplayDataTTRM : IReplayData
 
 						var targets = eventDynamic.data.data as List<string>;
 						for (int i = 0; i < targets.Count; i++)
-							targets[i] = targets[i].Substring(0, 24);
+						{
+							try
+							{
+								targets[i] = targets[i].Substring(0, 24);
+							}
+							catch
+							{
+							}
+						}
 
 						var igeData = new EventIgeData();
 						igeData.type = "ige";
@@ -258,6 +266,11 @@ public class ReplayDataTTRM : IReplayData
 		{
 			var options = (rawEventbyPlayer.events?.FirstOrDefault(ev => ev.type == EventType.Full) as EventFull)?.data
 				.options;
+
+			options = JsonSerializer
+				.Deserialize<EventFullData>(rawEventbyPlayer.events?.FirstOrDefault(ev => ev.type == EventType.Full)
+					.data.ToString()).options;
+
 
 			options ??= JsonSerializer
 				.Deserialize<EventEndData>(rawEventbyPlayer.events?.LastOrDefault(ev => ev.type == EventType.End).data
